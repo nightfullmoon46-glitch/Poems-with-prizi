@@ -20,6 +20,50 @@ const birthdayQuiz = [
   }
 ];
 
+const mamdiParagraphs = [
+  "My Mamdi used to be with me every single second.",
+  "Wherever she went, she used to tell me. Whatever happened, she used to update me.",
+  "She used to talk a lot - and honestly, I loved listening to her.",
+  "I loved hearing about her days, her feelings, her problems, the little things that happened to her, and almost everything that existed inside her world.",
+  "I miss my Mamdi. I miss her every single second.",
+  "What I actually want is simple.",
+  "I want **my Mamdi to always be my Mamdi**. Not someone else. Not a distant version of her.",
+  "I want her to call me the way she used to. I want her to text me the way she used to.",
+  "She used to call me as soon as she woke up in the morning. She would call while getting ready for the office or before going somewhere. Sometimes she would call even while taking a bath.",
+  "And when she reached home from the office, she would call again.",
+  "She used to call throughout the night.",
+  "Even though we were in two different places, it never really felt like we were apart.",
+  "She trusted me in a way that made me feel like I was her safest place.",
+  "We were comfortable with everything. There was no need to think before speaking. No need to pretend. No need to be careful.",
+  "I could just be myself.",
+  "And then, somehow, almost overnight, everything changed.",
+  "I don't know why.",
+  "I don't know what happened.",
+  "I just know that I still want my Mamdi.",
+  "I want the girl who used to call me for no particular reason. The girl who could tell me everything. The girl who was comfortable enough to be completely herself with me.",
+  "I don't want to think before talking to her.",
+  "I don't want to measure every word.",
+  "I just want to feel that safe place again.",
+  "I don't want her to leave me alone in this darkness.",
+  "I miss staring at her for hours, just like I used to - sometimes even through the whole night while she was asleep.",
+  "I miss being close to her.",
+  "I miss her voice.",
+  "I miss her little updates.",
+  "I miss knowing how her day went.",
+  "I miss knowing what she was feeling.",
+  "I miss **her**.",
+  "And honestly, I don't know how to unlove her.",
+  "Maybe I don't want to.",
+  "So, if you're reading this...",
+  "And if there is still a little bit of **my Mamdi** inside you, please call me like you used to.",
+  "Talk to me like you used to.",
+  "Be comfortable with me like you always were.",
+  "And let me know everything about you again.",
+  "Because somewhere inside me, I'm still waiting to know how my Mamdi is doing."
+];
+
+const formatLetterText = (value = '') => esc(value).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
 function birthdayWasSeen() {
   try { return sessionStorage.getItem(birthdayKey) === 'yes'; }
   catch { return birthdaySeen; }
@@ -30,7 +74,7 @@ function leaveBirthday() {
   try { sessionStorage.setItem(birthdayKey, 'yes'); } catch {}
   document.body.classList.remove('birthday-mode');
   document.title = 'Poems with Prizi';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#fbf6f7');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#fbf9ff');
   route();
 }
 
@@ -47,7 +91,7 @@ function renderBirthday(moveFocus = false) {
 
   if (birthdayStep === 0) {
     content = `<p class="birthday-kicker">A LITTLE WISH FOR SOMEONE ONE OF A KIND</p>
-      <h1 id="birthday-heading">Happy birthday, Mam.</h1>
+      <h1 id="birthday-heading"><span class="birthday-highlight">Happiest birthday</span>, to the most beautiful person.</h1>
       <p class="birthday-subtitle">To my Moon: may your new year be as gentle, bright, and beautiful as you make the world around you.</p>
       <button class="birthday-primary" type="button" data-next>Open your birthday note <span aria-hidden="true">&rarr;</span></button>`;
   } else if (birthdayStep === 1) {
@@ -152,6 +196,11 @@ function home() {
       </figure>
     </section>
 
+    <section class="birthday-callout" aria-label="Birthday greeting">
+      <p class="eyebrow">FOR SOMEONE ONE OF A KIND</p>
+      <h2>Happiest birthday, to the <em>most beautiful person.</em></h2>
+    </section>
+
     <section class="home-shelf" aria-labelledby="shelf-title">
       <div class="section-heading">
         <div><p class="eyebrow">FROM THE PAGE</p><h2 id="shelf-title">Read what feels close.</h2></div>
@@ -175,8 +224,34 @@ function home() {
         </a>
       </div>
     </section>
+
+    <section class="mamdi-feature" aria-labelledby="mamdi-feature-title">
+      <div>
+        <p class="eyebrow">A NOTE I STILL CARRY</p>
+        <h2 id="mamdi-feature-title">Dedicated to Mamdi.</h2>
+      </div>
+      <div class="mamdi-feature-copy">
+        <p>Some words for the girl who once made distance feel like nothing at all.</p>
+        <a class="text-action" href="#/mamdi">Read the dedication <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </section>
   </div>`;
   setActiveNavigation();
+  enterView();
+}
+
+function mamdiReader() {
+  app.innerHTML = `<section class="letter-wrap route-enter">
+    <a class="reader-back" href="#/"><span aria-hidden="true">&larr;</span> Home</a>
+    <article class="letter-reader">
+      <p class="eyebrow">A LETTER FROM THE HEART</p>
+      <h1>Dedicated to Mamdi</h1>
+      <p class="letter-subtitle">How was my Mamdi?</p>
+      <div class="letter-body">${mamdiParagraphs.map(paragraph => `<p>${formatLetterText(paragraph)}</p>`).join('')}</div>
+      <p class="letter-signoff">Somewhere inside me, I'm still waiting to know how my Mamdi is doing.</p>
+    </article>
+  </section>`;
+  setActiveNavigation('mamdi');
   enterView();
 }
 
@@ -307,6 +382,7 @@ function route() {
   window.scrollTo(0, 0);
 
   if (!categoryName) return home();
+  if (categoryName === 'mamdi') return mamdiReader();
   if (!['poems', 'stories'].includes(categoryName)) return home();
   if (parts.length === 1) return category(categoryName);
 
